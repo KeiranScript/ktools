@@ -36,7 +36,10 @@ def load_and_run_script(script_name, *args):
             module = importlib.import_module(module_name)
             print(bcolors.OKCYAN +
                   f"\nRunning script: {script_name}" + bcolors.ENDC)
-            module.main(*args)  # Pass arguments to the script's main function
+            sys.argv = [script_name] + list(
+                args
+            )  # Update sys.argv to pass the arguments correctly
+            module.main()  # Invoke the main function of the script
         except Exception as e:
             print(bcolors.FAIL +
                   f"Failed to run {script_name}: {e}" + bcolors.ENDC)
