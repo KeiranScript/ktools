@@ -2,9 +2,25 @@ import pyperclip
 import keyboard
 import time
 import os
+import sys
+import subprocess
 
 # Clipboard history file path
 CLIPBOARD_HISTORY_FILE = os.path.expanduser("~/.clipboard_history.txt")
+
+
+def check_and_elevate_privileges():
+    """Check if the script is being run as root. If not, elevate privileges using sudo."""
+    if os.geteuid() != 0:
+        print(
+            "This script requires root privileges to access certain system resources."
+        )
+        try:
+            subprocess.check_call(["sudo", sys.executable] + sys.argv)
+            sys.exit(0)
+        except subprocess.CalledProcessError:
+            print("Failed to obtain root privileges. Exiting.")
+            sys.exit(1)
 
 
 def save_clipboard_to_history(clipboard_content):
@@ -30,6 +46,8 @@ def display_clipboard_history():
 
 
 def main():
+    check_and_elevate_privileges()
+
     print("Starting Clipboard Manager...")
     clipboard_history = load_clipboard_history()
 
